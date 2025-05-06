@@ -1,0 +1,123 @@
+2025-05-06 09:44:07,364 - semgrep.notifications - WARNING - METRICS: Using configs from the Registry (like --config=p/ci) reports pseudonymous rule metrics to semgrep.dev.
+To disable Registry rule metrics, use "--metrics=off".
+Using configs only from local files (like --config=xyz.yml) does not enable metrics.
+
+More information: https://semgrep.dev/docs/metrics
+
+2025-05-06 09:44:07,365 - semgrep.run_scan - DEBUG - semgrep version 1.2.0
+2025-05-06 09:44:07,368 - semgrep.git - DEBUG - Failed to get project url from 'git ls-remote': Command failed with exit code: 128
+-----
+Command failed with output:
+fatal: No remote configured to list refs from.
+
+
+Failed to run 'git ls-remote --get-url'. Possible reasons:
+
+- the git binary is not available
+- the current working directory is not a git repository
+- the baseline commit is not a parent of the current commit
+    (if you are running through semgrep-app, check if you are setting `SEMGREP_BRANCH` or `SEMGREP_BASELINE_COMMIT` properly)
+- the current working directory is not marked as safe
+    (fix with `git config --global --add safe.directory $(pwd)`)
+
+Try running the command yourself to debug the issue.
+2025-05-06 09:44:07,369 - semgrep.config_resolver - DEBUG - Loading local config from /home/runner/workspace/.config/.semgrep/semgrep_rules.json
+2025-05-06 09:44:07,372 - semgrep.config_resolver - DEBUG - Done loading local config from /home/runner/workspace/.config/.semgrep/semgrep_rules.json
+2025-05-06 09:44:07,375 - semgrep.config_resolver - DEBUG - Saving rules to /tmp/semgrep-8fpgtr3d.rules
+2025-05-06 09:44:07,748 - semgrep.semgrep_core - DEBUG - Failed to open resource semgrep-core-proprietary: [Errno 2] No such file or directory: '/tmp/_MEIrC9WaC/semgrep/bin/semgrep-core-proprietary'.
+2025-05-06 09:44:08,402 - semgrep.rule_lang - DEBUG - semgrep-core validation response: valid=True
+2025-05-06 09:44:08,402 - semgrep.rule_lang - DEBUG - semgrep-core validation succeeded
+2025-05-06 09:44:08,402 - semgrep.rule_lang - DEBUG - RPC validation succeeded
+2025-05-06 09:44:08,403 - semgrep.config_resolver - DEBUG - loaded 1 configs in 1.03348708152771
+2025-05-06 09:44:08,576 - semgrep.run_scan - VERBOSE - running 1250 rules from 1 config /home/runner/workspace/.config/.semgrep/semgrep_rules.json_0
+2025-05-06 09:44:08,576 - semgrep.run_scan - VERBOSE - No .semgrepignore found. Using default .semgrepignore rules. See the docs for the list of default ignores: https://semgrep.dev/docs/cli-usage/#ignore-files
+2025-05-06 09:44:08,578 - semgrep.run_scan - VERBOSE - Rules:
+2025-05-06 09:44:08,578 - semgrep.run_scan - VERBOSE - <SKIPPED DATA (too many entries; use --max-log-list-entries)>
+2025-05-06 09:44:08,955 - semgrep.core_runner - DEBUG - Passing whole rules directly to semgrep_core
+2025-05-06 09:44:09,143 - semgrep.core_runner - DEBUG - Running Semgrep engine with command:
+2025-05-06 09:44:09,143 - semgrep.core_runner - DEBUG - /tmp/_MEIrC9WaC/semgrep/bin/opengrep-core -json -rules /tmp/tmpn25n2so2.json -j 8 -targets /tmp/tmpv_hlchr8 -timeout 5 -timeout_threshold 3 -max_memory 0 -fast
+2025-05-06 09:44:12,235 - semgrep.core_runner - DEBUG - --- semgrep-core stderr ---
+[00.06][[34mINFO[0m]: Executed as: /tmp/_MEIrC9WaC/semgrep/bin/opengrep-core -json -rules /tmp/tmpn25n2so2.json -j 8 -targets /tmp/tmpv_hlchr8 -timeout 5 -timeout_threshold 3 -max_memory 0 -fast
+[00.06][[34mINFO[0m]: Version: 1.2.0
+[00.06][[34mINFO[0m]: Parsing rules in /tmp/tmpn25n2so2.json
+[00.79][[34mINFO[0m]: scan: processing 271 files (skipping 0), with 487 rules (skipping 0 )
+[01.42][[33mWARNING[0m]: Fixpoint timeout while performing taint analysis [rule: config..semgrep.vendored-rules.javascript.lang.security.audit.unsafe-formatstring file: db/seed.ts func: seed:9102]
+[0m[03.06][[34mINFO[0m]: Custom ignore pattern: None
+[03.06][[34mINFO[0m]: Custom ignore pattern: None
+--- end semgrep-core stderr ---
+2025-05-06 09:44:12,241 - semgrep.rule_match - DEBUG - match_key = ('', PosixPath('client/index.html'), 'config..semgrep.vendored-rules.html.security.audit.missing-integrity') match_id = 0ee74fd49637bebe183eca7188dbde26e386314e62cc2e7ba1ee60b377b638243fcd84e6c6fa04886198ccacfa6a711bfbcc61a28f9ddc913d5b3c53083cbc90_0
+2025-05-06 09:44:12,241 - semgrep.rule_match - DEBUG - match_key = (' type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js" (?is).*integrity= (google-analytics\\.com|fonts\\.googleapis\\.com|fonts\\.gstatic\\.com|googletagmanager\\.com) .*rel\\s*=\\s*[\'"]?preconnect.* href="... :// ..." href="//..." href=\'... :// ...\' href=\'//...\' src="... :// ..." src="//..." src=\'... :// ...\' src=\'//...\' <link  type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js" > <script  type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js" >...</script>', PosixPath('client/index.html'), 'config..semgrep.vendored-rules.html.security.audit.missing-integrity') match_id = 0728b64e224596592d04447ba8a642ff94e1fb9fcc07be26d49dc7e7f6898e638ad16ffcaca086932c58f4c6400fe32603323afef02cf9bfebcb0e4a53562a40_0
+2025-05-06 09:44:12,242 - semgrep.rule_match - DEBUG - match_key = (' type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js" (?is).*integrity= (google-analytics\\.com|fonts\\.googleapis\\.com|fonts\\.gstatic\\.com|googletagmanager\\.com) .*rel\\s*=\\s*[\'"]?preconnect.* href="... :// ..." href="//..." href=\'... :// ...\' href=\'//...\' src="... :// ..." src="//..." src=\'... :// ...\' src=\'//...\' <link  type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js" > <script  type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js" >...</script>', PosixPath('client/index.html'), 'config..semgrep.vendored-rules.html.security.audit.missing-integrity') match_id = 0728b64e224596592d04447ba8a642ff94e1fb9fcc07be26d49dc7e7f6898e638ad16ffcaca086932c58f4c6400fe32603323afef02cf9bfebcb0e4a53562a40_0
+2025-05-06 09:44:12,242 - semgrep.rule_match - DEBUG - match_key = (' type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js" (?is).*integrity= (google-analytics\\.com|fonts\\.googleapis\\.com|fonts\\.gstatic\\.com|googletagmanager\\.com) .*rel\\s*=\\s*[\'"]?preconnect.* href="... :// ..." href="//..." href=\'... :// ...\' href=\'//...\' src="... :// ..." src="//..." src=\'... :// ...\' src=\'//...\' <link  type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js" > <script  type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js" >...</script>', PosixPath('client/index.html'), 'config..semgrep.vendored-rules.html.security.audit.missing-integrity') match_id = 0728b64e224596592d04447ba8a642ff94e1fb9fcc07be26d49dc7e7f6898e638ad16ffcaca086932c58f4c6400fe32603323afef02cf9bfebcb0e4a53562a40_0
+2025-05-06 09:44:12,243 - semgrep.rule_match - DEBUG - match_key = ('', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = fd21c6d99c706fe985e6870dedadf10b551eeafc66befb6dc2c8c3466a62343eae435740eb1c10048553e0705865160740e7eee36caaaec5b16a48f7ed133e89_0
+2025-05-06 09:44:12,243 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_0
+2025-05-06 09:44:12,244 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_0
+2025-05-06 09:44:12,244 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_0
+2025-05-06 09:44:12,244 - semgrep.rule_match - DEBUG - match_key = ('', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = fd21c6d99c706fe985e6870dedadf10b551eeafc66befb6dc2c8c3466a62343eae435740eb1c10048553e0705865160740e7eee36caaaec5b16a48f7ed133e89_0
+2025-05-06 09:44:12,245 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_0
+2025-05-06 09:44:12,245 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_0
+2025-05-06 09:44:12,246 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_1
+2025-05-06 09:44:12,246 - semgrep.rule_match - DEBUG - match_key = ('', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = fd21c6d99c706fe985e6870dedadf10b551eeafc66befb6dc2c8c3466a62343eae435740eb1c10048553e0705865160740e7eee36caaaec5b16a48f7ed133e89_0
+2025-05-06 09:44:12,247 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_0
+2025-05-06 09:44:12,247 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_0
+2025-05-06 09:44:12,248 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_2
+2025-05-06 09:44:12,248 - semgrep.rule_match - DEBUG - match_key = ('', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = fd21c6d99c706fe985e6870dedadf10b551eeafc66befb6dc2c8c3466a62343eae435740eb1c10048553e0705865160740e7eee36caaaec5b16a48f7ed133e89_0
+2025-05-06 09:44:12,248 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_0
+2025-05-06 09:44:12,249 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_0
+2025-05-06 09:44:12,249 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_3
+2025-05-06 09:44:12,250 - semgrep.rule_match - DEBUG - match_key = ('', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = fd21c6d99c706fe985e6870dedadf10b551eeafc66befb6dc2c8c3466a62343eae435740eb1c10048553e0705865160740e7eee36caaaec5b16a48f7ed133e89_0
+2025-05-06 09:44:12,250 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_0
+2025-05-06 09:44:12,250 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_0
+2025-05-06 09:44:12,251 - semgrep.rule_match - DEBUG - match_key = ('(?i)(?:administrator_login_password|password)(?:[0-9a-z\\-_\\t .]{0,20})(?:[\\s|\']|[\\s|"]){0,3}(?:=|>|:{1,3}=|\\|\\|:|<=|=>|:|\\?=)(?:\'|\\"|\\s|=|\\x60){0,5}("[a-z0-9=_\\-]{8,20}")(?:[\'|\\"|\\n|\\r|\\s|\\x60|;]|$)', PosixPath('db/seed.ts'), 'config..semgrep.vendored-rules.generic.secrets.gitleaks.hashicorp-tf-password') match_id = 5beb34dfb013e2aa1caee1d7ef71b2a8399845667e6f46c5217ccaa0b5a1fcd62649d48a7162e794d197fa55aa55c6cebdd02aa25cc5396fea290b44d9184faf_4
+2025-05-06 09:44:12,254 - semgrep.core_runner - DEBUG - semgrep ran in 0:00:03.298425 on 92 files
+2025-05-06 09:44:12,255 - semgrep.core_runner - DEBUG - findings summary: 1 warning, 0 error, 5 info
+2025-05-06 09:44:12,258 - semgrep.app.auth - DEBUG - Getting API token from settings file
+2025-05-06 09:44:12,258 - semgrep.app.auth - DEBUG - No API token found in settings file
+2025-05-06 09:44:12,259 - semgrep.semgrep_core - DEBUG - Failed to open resource semgrep-core-proprietary: [Errno 2] No such file or directory: '/tmp/_MEIrC9WaC/semgrep/bin/semgrep-core-proprietary'.
+2025-05-06 09:44:12,353 - semgrep.output - VERBOSE - 
+========================================
+Files skipped:
+========================================
+
+  Always skipped by Opengrep:
+
+   • <none>
+
+  Skipped by .gitignore:
+  (Disable by passing --no-git-ignore)
+
+   • <all files not listed by `git ls-files` were skipped>
+
+  Skipped by .semgrepignore:
+  - https://semgrep.dev/docs/ignoring-files-folders-code/#understand-semgrep-defaults
+
+   • <none>
+
+  Skipped by --include patterns:
+
+   • <none>
+
+  Skipped by --exclude patterns:
+
+   • <none>
+
+  Files skipped due to insufficient read permissions:
+
+   • <none>
+
+  Skipped by limiting to files smaller than 1000000 bytes:
+  (Adjust with the --max-target-bytes flag)
+
+   • <none>
+
+  Partially analyzed due to parsing or internal Opengrep errors
+
+   • tailwind.config.ts (1 lines skipped)
+
+2025-05-06 09:44:12,354 - semgrep.output - INFO - Some files were skipped or only partially analyzed.
+  Scan was limited to files tracked by git.
+  Partially scanned: 1 files only partially analyzed due to parsing or internal Opengrep errors
+
+Ran 443 rules on 92 files: 6 findings.
+2025-05-06 09:44:12,354 - semgrep.app.version - DEBUG - Version cache does not exist
+2025-05-06 09:44:12,374 - semgrep.metrics - VERBOSE - Not sending pseudonymous metrics since metrics are configured to OFF and registry usage is False
