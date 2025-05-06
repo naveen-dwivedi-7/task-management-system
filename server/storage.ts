@@ -200,11 +200,17 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (filters.status && filters.status !== 'all_statuses') {
-      filteredQuery = filteredQuery.where(eq(tasks.status, filters.status));
+      // Use SQL template string to safely handle enum value
+      filteredQuery = filteredQuery.where(
+        sql`${tasks.status} = ${filters.status}`
+      );
     }
     
     if (filters.priority && filters.priority !== 'all_priorities') {
-      filteredQuery = filteredQuery.where(eq(tasks.priority, filters.priority));
+      // Use SQL template string to safely handle enum value
+      filteredQuery = filteredQuery.where(
+        sql`${tasks.priority} = ${filters.priority}`
+      );
     }
     
     if (filters.dueDate && filters.dueDate !== 'all_dates') {
@@ -249,14 +255,22 @@ export class DatabaseStorage implements IStorage {
     
     const userIds = new Set<number>();
     tasks.forEach(task => {
-      userIds.add(task.createdById);
-      userIds.add(task.assignedToId);
+      if (task.createdById) userIds.add(task.createdById);
+      if (task.assignedToId) userIds.add(task.assignedToId);
     });
     
+    if (userIds.size === 0) return {};
+    
+    // Use individual queries with OR conditions instead of IN clause
+    // This avoids SQL parameter formatting issues
     const userList = await db
       .select()
       .from(users)
-      .where(sql`${users.id} IN (${Array.from(userIds).join(',')})`);
+      .where(
+        or(
+          ...Array.from(userIds).map(id => eq(users.id, id))
+        )
+      );
     
     const userMap: Record<number, User> = {};
     userList.forEach(user => {
