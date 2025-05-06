@@ -1,10 +1,19 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { Task, insertTaskSchema, updateTaskSchema } from "@shared/schema";
 import { z } from "zod";
 import { ZodError } from "zod";
+
+// Store connected clients
+type ConnectedClient = {
+  ws: WebSocket;
+  userId?: number;
+};
+
+const clients: ConnectedClient[] = [];
 
 // Middleware to check authentication
 function isAuthenticated(req: Request, res: Response, next: Function) {
@@ -46,6 +55,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       const task = await storage.createTask(taskData);
+      
+      // Notify the assigned user about the new task
+      if (task.assignedToId !== req.user!.id) {
+        const notification = {
+          id: Date.now(),
+          taskId: task.id,
+          title: task.title,
+          message: `You have been assigned a new task: ${task.title}`,
+          type: 'task_assigned'
+        };
+        notifyUser(task.assignedToId, notification);
+      }
+      
+      // Broadcast task update to all connected clients
+      broadcastTaskUpdate({
+        action: 'created',
+        task
+      });
+      
       res.status(201).json(task);
     } catch (error) {
       handleError(res, error);
@@ -156,6 +184,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const taskData = updateTaskSchema.parse(req.body);
       const updatedTask = await storage.updateTask(taskId, taskData);
       
+      // Notify relevant users about the update
+      const notifyUserIds = [task.createdById, task.assignedToId].filter(id => id !== req.user!.id);
+      
+      notifyUserIds.forEach(userId => {
+        const notification = {
+          id: Date.now(),
+          taskId: updatedTask.id,
+          title: updatedTask.title,
+          message: `Task "${updatedTask.title}" has been updated`,
+          type: 'task_updated'
+        };
+        notifyUser(userId, notification);
+      });
+      
+      // Broadcast task update to all connected clients
+      broadcastTaskUpdate({
+        action: 'updated',
+        task: updatedTask
+      });
+      
       res.json(updatedTask);
     } catch (error) {
       handleError(res, error);
@@ -187,6 +235,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const updatedTask = await storage.updateTaskStatus(taskId, status);
+      
+      // Notify relevant users about the status change
+      if (updatedTask) {
+        const statusMessage = status === 'done' ? 'completed' : `moved to ${status}`;
+        const notifyUserIds = [task.createdById, task.assignedToId].filter(id => id !== req.user!.id);
+        
+        notifyUserIds.forEach(userId => {
+          const notification = {
+            id: Date.now(),
+            taskId: updatedTask.id,
+            title: updatedTask.title,
+            message: `Task "${updatedTask.title}" has been ${statusMessage}`,
+            type: 'task_updated'
+          };
+          notifyUser(userId, notification);
+        });
+      }
+      
+      // Broadcast task update to all connected clients
+      if (updatedTask) {
+        broadcastTaskUpdate({
+          action: 'status_updated',
+          task: updatedTask
+        });
+      }
+      
       res.json(updatedTask);
     } catch (error) {
       handleError(res, error);
@@ -331,5 +405,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   const httpServer = createServer(app);
+  
+  // Create WebSocket server on the same http server but distinct path
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  // Handle WebSocket connections
+  wss.on('connection', (ws) => {
+    console.log('New WebSocket connection established');
+    
+    // Add client to clients array
+    const client: ConnectedClient = { ws };
+    clients.push(client);
+    
+    // Handle messages from clients
+    ws.on('message', (message) => {
+      try {
+        const data = JSON.parse(message.toString());
+        
+        // Handle authentication
+        if (data.type === 'auth') {
+          const userId = data.userId;
+          if (userId) {
+            client.userId = userId;
+            console.log(`WebSocket client authenticated with user ID: ${userId}`);
+            
+            // Send confirmation
+            ws.send(JSON.stringify({
+              type: 'auth_success',
+              message: 'Authentication successful'
+            }));
+          }
+        }
+      } catch (error) {
+        console.error('Error processing WebSocket message:', error);
+      }
+    });
+    
+    // Handle disconnection
+    ws.on('close', () => {
+      const index = clients.indexOf(client);
+      if (index !== -1) {
+        clients.splice(index, 1);
+        console.log('WebSocket connection closed');
+      }
+    });
+    
+    // Initial message to client
+    ws.send(JSON.stringify({
+      type: 'welcome',
+      message: 'Connected to Task Management System WebSocket Server'
+    }));
+  });
+  
+  // Send notification to a specific user
+  function notifyUser(userId: number, notification: any) {
+    if (!userId) return;
+    
+    const userClients = clients.filter(client => client.userId === userId);
+    const message = JSON.stringify({
+      type: 'notification',
+      data: notification
+    });
+    
+    userClients.forEach(client => {
+      if (client.ws.readyState === WebSocket.OPEN) {
+        client.ws.send(message);
+      }
+    });
+  }
+  
+  // Broadcast updates to all connected clients
+  function broadcastTaskUpdate(data: any) {
+    const message = JSON.stringify({
+      type: 'task_update',
+      data
+    });
+    
+    clients.forEach(client => {
+      if (client.ws.readyState === WebSocket.OPEN) {
+        client.ws.send(message);
+      }
+    });
+  }
+  
+  // Use the notification functions in relevant task routes
+  // We'll add this in our API endpoints
+  
   return httpServer;
 }
