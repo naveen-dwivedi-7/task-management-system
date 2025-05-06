@@ -9,6 +9,7 @@ import { PlusIcon } from "lucide-react";
 import { CreateTaskForm } from "@/components/tasks/create-task-form";
 import { useAuth } from "@/hooks/use-auth";
 import { NotificationsDropdown } from "@/components/layout/notifications";
+import { WebSocketStatus } from "@/components/websocket-status";
 
 export default function DashboardPage() {
   const { user } = useAuth();

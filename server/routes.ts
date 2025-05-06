@@ -185,24 +185,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updatedTask = await storage.updateTask(taskId, taskData);
       
       // Notify relevant users about the update
-      const notifyUserIds = [task.createdById, task.assignedToId].filter(id => id !== req.user!.id);
-      
-      notifyUserIds.forEach(userId => {
-        const notification = {
-          id: Date.now(),
-          taskId: updatedTask.id,
-          title: updatedTask.title,
-          message: `Task "${updatedTask.title}" has been updated`,
-          type: 'task_updated'
-        };
-        notifyUser(userId, notification);
-      });
-      
-      // Broadcast task update to all connected clients
-      broadcastTaskUpdate({
-        action: 'updated',
-        task: updatedTask
-      });
+      if (updatedTask) {
+        const notifyUserIds = [task.createdById, task.assignedToId].filter(id => id !== req.user!.id);
+        
+        notifyUserIds.forEach(userId => {
+          const notification = {
+            id: Date.now(),
+            taskId: updatedTask.id,
+            title: updatedTask.title,
+            message: `Task "${updatedTask.title}" has been updated`,
+            type: 'task_updated'
+          };
+          notifyUser(userId, notification);
+        });
+        
+        // Broadcast task update to all connected clients
+        broadcastTaskUpdate({
+          action: 'updated',
+          task: updatedTask
+        });
+      }
       
       res.json(updatedTask);
     } catch (error) {
@@ -292,6 +294,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const updatedTask = await storage.updateTaskAssignee(taskId, assigneeId, userId);
+      
+      // Notify the new assignee
+      if (updatedTask && assigneeId !== userId) {
+        const notification = {
+          id: Date.now(),
+          taskId: updatedTask.id,
+          title: updatedTask.title,
+          message: `You have been assigned to task: "${updatedTask.title}"`,
+          type: 'task_assigned'
+        };
+        notifyUser(assigneeId, notification);
+      }
+      
+      // Broadcast task update to all connected clients
+      if (updatedTask) {
+        broadcastTaskUpdate({
+          action: 'assignee_updated',
+          task: updatedTask
+        });
+      }
+      
       res.json(updatedTask);
     } catch (error) {
       handleError(res, error);
@@ -319,6 +342,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const deleted = await storage.deleteTask(taskId);
       
       if (deleted) {
+        // Notify assignee about task deletion if different from current user
+        if (task.assignedToId !== req.user!.id) {
+          const notification = {
+            id: Date.now(),
+            taskId: task.id,
+            title: task.title,
+            message: `Task "${task.title}" has been deleted`,
+            type: 'task_updated'
+          };
+          notifyUser(task.assignedToId, notification);
+        }
+        
+        // Broadcast task deletion to all connected clients
+        broadcastTaskUpdate({
+          action: 'deleted',
+          taskId: task.id,
+          title: task.title
+        });
+        
         res.json({ message: "Task deleted successfully" });
       } else {
         res.status(500).json({ message: "Failed to delete task" });
