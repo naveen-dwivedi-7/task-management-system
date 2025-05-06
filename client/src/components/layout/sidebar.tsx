@@ -78,17 +78,16 @@ function NavItem({ href, label, icon }: NavItemProps) {
   const [isActive] = useRoute(href);
   
   return (
-    <Link href={href}>
-      <a
-        className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-          isActive 
-            ? "bg-primary-light text-white" 
-            : "text-gray-700 hover:bg-gray-100"
-        }`}
-      >
-        {icon}
-        {label}
-      </a>
+    <Link 
+      href={href}
+      className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+        isActive 
+          ? "bg-primary-light text-white" 
+          : "text-gray-700 hover:bg-gray-100"
+      }`}
+    >
+      {icon}
+      {label}
     </Link>
   );
 }

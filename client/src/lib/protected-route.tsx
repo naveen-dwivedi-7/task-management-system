@@ -23,8 +23,16 @@ export function ProtectedRoute({
   }
 
   if (!user) {
-    setLocation("/auth");
-    return null;
+    return (
+      <Route path={path}>
+        {() => {
+          // Use effect pattern to avoid state updates during render
+          // This will run after render is complete
+          setTimeout(() => setLocation("/auth"), 0);
+          return null;
+        }}
+      </Route>
+    );
   }
 
   return <Route path={path} component={Component} />;

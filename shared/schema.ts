@@ -58,6 +58,7 @@ export const usersRelations = relations(users, ({ many }) => ({
 export const insertTaskSchema = createInsertSchema(tasks, {
   title: (schema) => schema.min(3, "Title must be at least 3 characters"),
   description: (schema) => schema.min(5, "Description must be at least 5 characters"),
+  dueDate: (schema) => z.coerce.date(),
 }).omit({ createdAt: true, updatedAt: true });
 
 export type InsertTask = z.infer<typeof insertTaskSchema>;
@@ -106,6 +107,7 @@ export type Notification = typeof notifications.$inferSelect;
 export const updateTaskSchema = createInsertSchema(tasks, {
   title: (schema) => schema.min(3, "Title must be at least 3 characters"),
   description: (schema) => schema.min(5, "Description must be at least 5 characters"),
+  dueDate: (schema) => z.coerce.date(),
 }).partial().omit({ id: true, createdById: true, createdAt: true, updatedAt: true });
 
 export type UpdateTask = z.infer<typeof updateTaskSchema>;
