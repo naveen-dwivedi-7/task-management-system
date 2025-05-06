@@ -52,6 +52,7 @@ export default function DashboardPage() {
                 </p>
               </div>
               <div className="mt-4 md:mt-0 flex items-center space-x-2">
+                <WebSocketStatus />
                 <NotificationsDropdown />
                 <Button 
                   onClick={() => setIsCreateTaskOpen(true)}

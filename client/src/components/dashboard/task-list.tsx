@@ -39,15 +39,14 @@ export function TaskList({
     `&priority=${priorityFilter}` +
     `&dueDate=${dueDateFilter}`;
     
-  // Fetch tasks with short polling interval for real-time updates
+  // Fetch tasks - real-time updates will be handled by WebSocket
   const { data: tasks, isLoading } = useQuery<{
     tasks: Task[];
     users: Record<number, User>;
   }>({
     queryKey: [queryUrl],
     enabled: true,
-    refetchInterval: 2000, // Poll every 2 seconds for updates
-    staleTime: 1000, // Consider data stale after 1 second
+    // No need for polling since WebSocket will trigger cache invalidation
   });
   
   // Delete task mutation
