@@ -39,13 +39,15 @@ export function TaskList({
     `&priority=${priorityFilter}` +
     `&dueDate=${dueDateFilter}`;
     
-  // Fetch tasks
+  // Fetch tasks with short polling interval for real-time updates
   const { data: tasks, isLoading } = useQuery<{
     tasks: Task[];
     users: Record<number, User>;
   }>({
     queryKey: [queryUrl],
     enabled: true,
+    refetchInterval: 2000, // Poll every 2 seconds for updates
+    staleTime: 1000, // Consider data stale after 1 second
   });
   
   // Delete task mutation
@@ -53,9 +55,16 @@ export function TaskList({
     mutationFn: async (taskId: number) => {
       await apiRequest("DELETE", `/api/tasks/${taskId}`);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [endpoint.split('?')[0]] });
-      queryClient.invalidateQueries({ queryKey: ["/api/tasks/stats"] });
+    onSuccess: async () => {
+      // Invalidate all relevant queries
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/assigned"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/created"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/overdue"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/stats"] })
+      ]);
+      
       toast({
         title: "Task deleted",
         description: "The task has been successfully deleted.",
@@ -75,9 +84,16 @@ export function TaskList({
     mutationFn: async ({ taskId, status }: { taskId: number; status: string }) => {
       await apiRequest("PATCH", `/api/tasks/${taskId}/status`, { status });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [endpoint.split('?')[0]] });
-      queryClient.invalidateQueries({ queryKey: ["/api/tasks/stats"] });
+    onSuccess: async () => {
+      // Invalidate all relevant queries
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/assigned"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/created"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/overdue"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/stats"] })
+      ]);
+      
       toast({
         title: "Status updated",
         description: "The task status has been updated.",
@@ -97,9 +113,17 @@ export function TaskList({
     mutationFn: async ({ taskId, assigneeId }: { taskId: number; assigneeId: number }) => {
       await apiRequest("PATCH", `/api/tasks/${taskId}/assignee`, { assigneeId });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [endpoint.split('?')[0]] });
-      queryClient.invalidateQueries({ queryKey: ["/api/notifications"] });
+    onSuccess: async () => {
+      // Invalidate all relevant queries
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/assigned"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/created"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/overdue"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/stats"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/notifications"] })
+      ]);
+      
       toast({
         title: "Task reassigned",
         description: "The task has been reassigned to another user.",

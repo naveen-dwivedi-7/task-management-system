@@ -103,20 +103,23 @@ export function CreateTaskForm({ isOpen, onClose, taskToEdit }: CreateTaskFormPr
         assignedToId: parseInt(data.assignedToId, 10),
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      // Directly update queries to ensure immediate UI refresh
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/assigned"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/created"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/overdue"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/stats"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/notifications"] })
+      ]);
+      
       toast({
         title: "Task created",
         description: "Your task has been created successfully.",
       });
       form.reset();
       onClose();
-      // Invalidate relevant queries
-      queryClient.invalidateQueries({ queryKey: ["/api/tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/tasks/assigned"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/tasks/created"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/tasks/overdue"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/tasks/stats"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/notifications"] });
     },
     onError: (error: Error) => {
       toast({
@@ -139,20 +142,23 @@ export function CreateTaskForm({ isOpen, onClose, taskToEdit }: CreateTaskFormPr
         status: data.status,
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      // Directly update queries to ensure immediate UI refresh
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/assigned"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/created"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/overdue"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/tasks/stats"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/notifications"] })
+      ]);
+      
       toast({
         title: "Task updated",
         description: "Your task has been updated successfully.",
       });
       form.reset();
       onClose();
-      // Invalidate relevant queries
-      queryClient.invalidateQueries({ queryKey: ["/api/tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/tasks/assigned"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/tasks/created"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/tasks/overdue"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/tasks/stats"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/notifications"] });
     },
     onError: (error: Error) => {
       toast({
